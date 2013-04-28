@@ -6,10 +6,10 @@ def do(l):
 
     wins, losses = solver.solve(m)
     losses = solver.prune_losses(wins, losses)
-    print 'WINS:'
-    print '\n'.join([str(x) for x in wins])
-    print 'LOSSES:'
-    print '\n'.join([str(x) for x in losses])
+    #print 'WINS:'
+    #print '\n'.join([str(x) for x in wins])
+    #print 'LOSSES:'
+    #print '\n'.join([str(x) for x in losses])
 
     total_wins = len(wins)
     total_losses = len(losses)
@@ -41,14 +41,14 @@ level2 = [
 ]
 
 level3 = [
-    "   __   ___         ",
+    "                    ",
+    "                    ",
+    "   _____S__         ",
     "   ___              ",
-    "  _   _S S          ",
-    "   S _S___S_        ",
     "__S__S_S*___SS______",
 ]
 
 do(level1)
 do(level2)
-#do(level3)
+do(level3)
 #do(level4)

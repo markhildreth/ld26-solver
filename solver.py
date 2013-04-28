@@ -129,5 +129,6 @@ def prune_losses(win_paths, loss_paths):
         if not found_match:
             real_losses.append(loss_path)
 
-    return real_losses
+    # Remove duplicate loss scenarios
+    return set([tuple(x) for x in real_losses])
 
