@@ -8,6 +8,7 @@ def make_map(level):
     m['devices_remaining'] = 0
     m['path'] = []
     m['device_path'] = []
+    m['teleporters'] = []
     data = m['data'] = {}
 
     for yIndex, yLevel in enumerate(level):
@@ -19,6 +20,10 @@ def make_map(level):
                 data[coord] = '_'
             elif xLevel == '_' or xLevel == ' ':
                 data[coord] = xLevel
+            elif xLevel == 'E':
+                data[coord] = xLevel
+                m['teleporters'].append(coord)
+                m['devices_remaining'] += 1
             else:
                 data[coord] = xLevel
                 m['devices_remaining'] += 1
@@ -33,6 +38,7 @@ def _copy(g):
         'devices_remaining' : g['devices_remaining'],
         'path' : g['path'][:],
         'device_path' : g['device_path'][:],
+        'teleporters' : g['teleporters'][:],
     }
 
 def _handle_effect(g, dest):
@@ -54,6 +60,23 @@ def _handle_effect(g, dest):
                     dest = dest[0] - 1, dest[1] + 2
                 else:
                     dest = dest[0] + 1, dest[1] + 2
+            elif tile == 'R':
+                g['devices_remaining'] -= 1
+                data[dest] = ' '
+                if g['facing'] == 'left':
+                    dest = dest[0] - 1, dest[1]
+                else:
+                    dest = dest[0] + 1, dest[1]
+            elif tile == 'T':
+                g['devices_remaining'] -= 1
+                data[dest] = '_'
+                dest = dest[0], dest[1] - 1
+            elif tile == 'E':
+                g['devices_remaining'] -= 2
+                newDest = [x for x in g['teleporters'] if x != dest][0]
+                data[dest] = '_'
+                data[newDest] = '_'
+                dest = newDest
 
     g['player'] = dest
     g['path'].append('Effect to {0}'.format(dest))
@@ -133,7 +156,6 @@ def prune_paths(win_paths, loss_paths):
     real_wins = list(set([tuple(x) for x in win_paths]))
     # Remove duplicate loss scenarios
     real_losses = list(set([tuple(x) for x in real_losses]))
-    #return real_losses
 
     # Now go through losses that are really just the start
     # to other losses and remove those
