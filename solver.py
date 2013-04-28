@@ -1,3 +1,5 @@
+import random
+
 MAP_WIDTH = 20
 
 def make_map(level):
@@ -177,3 +179,16 @@ def prune_paths(win_paths, loss_paths):
     return real_wins, real_losses_2
         
 
+def create_random(m):
+    results = []
+    for yIndex, y in enumerate(m):
+        result = ''
+        for xIndex, x in enumerate(y):
+            if x == '?':
+                result = result + random.choice(['R', 'T', 'S'])
+            else:
+                result = result + x
+        results.append(result)
+
+    
+    return results
