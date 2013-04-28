@@ -130,5 +130,26 @@ def prune_losses(win_paths, loss_paths):
             real_losses.append(loss_path)
 
     # Remove duplicate loss scenarios
-    return set([tuple(x) for x in real_losses])
+    real_losses = list(set([tuple(x) for x in real_losses]))
+    #return real_losses
+
+    # Now go through losses that are really just the start
+    # to other losses and remove those
+    real_losses_2 = []
+
+    for loss_path1 in real_losses:
+        found_parent = False
+        for loss_path2 in real_losses:
+            if loss_path1 == loss_path2:
+                continue
+
+            if loss_path1[:len(loss_path2)] == loss_path2:
+                found_parent = True
+                break
+
+        if not found_parent:
+            real_losses_2.append(loss_path1)
+
+    return real_losses_2
+        
 
