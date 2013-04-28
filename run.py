@@ -1,6 +1,28 @@
 import solver
 
-level = [
+def do(l):
+    print '\n'.join(l)
+    m = solver.make_map(l)
+
+    wins, losses = solver.solve(m)
+    losses = solver.prune_losses(wins, losses)
+    print 'WINS:'
+    print '\n'.join([str(x) for x in wins])
+    print 'LOSSES:'
+    print '\n'.join([str(x) for x in losses])
+
+    total_wins = len(wins)
+    total_losses = len(losses)
+    print '{0} Wins'.format(total_wins)
+    print '{0} Losses'.format(total_losses)
+
+    if losses == 0:
+        print '100% Win Prcnt'
+    else:
+        print '{0}% Win Prcnt'.format(total_wins * 100 / (total_wins + total_losses))
+
+
+level1 = [
     '       _            ',
     '                    ',
     '     _S             ',
@@ -10,9 +32,23 @@ level = [
     '*_S_________________'
 ]
 
-m = solver.make_map(level)
-wins, losses = solver.solve(m)
+level2 = [
+    "                    ",
+    "                    ",
+    "      _S_ _         ",
+    "       _S_S         ",
+    "_______S*___________",
+]
 
-print '{0} Wins'.format(wins)
-print '{0} Losses'.format(losses)
-print '{0}% Win Prcnt'.format(wins * 100.0 / losses)
+level3 = [
+    "   __   ___         ",
+    "   ___              ",
+    "  _   _S S          ",
+    "   S _S___S_        ",
+    "__S__S_S*___SS______",
+]
+
+do(level1)
+do(level2)
+#do(level3)
+#do(level4)

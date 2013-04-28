@@ -7,6 +7,7 @@ def make_map(level):
     m = {}
     m['devices_remaining'] = 0
     m['path'] = []
+    m['device_path'] = []
     data = m['data'] = {}
 
     for yIndex, yLevel in enumerate(level):
@@ -31,6 +32,7 @@ def _copy(g):
         'data' : g['data'].copy(),
         'devices_remaining' : g['devices_remaining'],
         'path' : g['path'][:],
+        'device_path' : g['device_path'][:],
     }
 
 def _handle_effect(g, dest):
@@ -41,15 +43,17 @@ def _handle_effect(g, dest):
         
         if tile == '_':
             break
-        if tile == ' ':
+        elif tile == ' ':
             dest = dest[0], dest[1] - 1
-        if tile == 'S':
-            g['devices_remaining'] -= 1
-            data[dest] = '_'
-            if g['facing'] == 'left':
-                dest = dest[0] - 1, dest[1] + 2
-            else:
-                dest = dest[0] + 1, dest[1] + 2
+        else:
+            g['device_path'].append(dest)
+            if tile == 'S':
+                g['devices_remaining'] -= 1
+                data[dest] = '_'
+                if g['facing'] == 'left':
+                    dest = dest[0] - 1, dest[1] + 2
+                else:
+                    dest = dest[0] + 1, dest[1] + 2
 
     g['player'] = dest
     g['path'].append('Effect to {0}'.format(dest))
@@ -88,32 +92,42 @@ def _move_right(g):
     return None
 
 def solve(g):
-    winning_solutions = 0
-    losing_solutions = 0
-
     if g['devices_remaining'] == 0:
-        print 'Winner: {0}'.format(g['path'])
-        return 1, 0
+        return [g['device_path']], []
 
-    newG = _move_left(_copy(g))
-    if not newG:
-        #print '{0}: Moving left loses'.format(g['path'])
-        losing_solutions += 1
-    else:
-        w, l = solve(newG)
+    winning_solutions = []
+    losing_solutions = []
+
+    leftG = _move_left(_copy(g))
+    rightG = _move_right(_copy(g))
+
+    if leftG:
+        w, l = solve(leftG)
         winning_solutions += w
         losing_solutions += l
 
-    newG = _move_right(_copy(g))
-    if not newG:
-        #print '{0}: Moving right loses'.format(g['path'])
-        losing_solutions += 1
-    else:
-        w, l = solve(newG)
+    if rightG:
+        w, l = solve(rightG)
         winning_solutions += w
         losing_solutions += l
 
+    if len(winning_solutions) == 0:
+        losing_solutions += [g['device_path']]
     return winning_solutions, losing_solutions
 
     
+def prune_losses(win_paths, loss_paths):
+    real_losses = []
+
+    for loss_path in loss_paths:
+        found_match = False
+        for win_path in win_paths:
+            if win_path[:len(loss_path)] == loss_path:
+                found_match = True
+                break
+
+        if not found_match:
+            real_losses.append(loss_path)
+
+    return real_losses
 
