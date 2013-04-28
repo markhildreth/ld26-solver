@@ -116,7 +116,7 @@ def solve(g):
     return winning_solutions, losing_solutions
 
     
-def prune_losses(win_paths, loss_paths):
+def prune_paths(win_paths, loss_paths):
     real_losses = []
 
     for loss_path in loss_paths:
@@ -129,6 +129,8 @@ def prune_losses(win_paths, loss_paths):
         if not found_match:
             real_losses.append(loss_path)
 
+    # Remove duplicate win scenarios
+    real_wins = list(set([tuple(x) for x in win_paths]))
     # Remove duplicate loss scenarios
     real_losses = list(set([tuple(x) for x in real_losses]))
     #return real_losses
@@ -150,6 +152,6 @@ def prune_losses(win_paths, loss_paths):
         if not found_parent:
             real_losses_2.append(loss_path1)
 
-    return real_losses_2
+    return real_wins, real_losses_2
         
 

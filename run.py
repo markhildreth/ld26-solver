@@ -5,11 +5,11 @@ def do(l):
     m = solver.make_map(l)
 
     wins, losses = solver.solve(m)
-    losses = solver.prune_losses(wins, losses)
-    #print 'WINS:'
-    #print '\n'.join([str(x) for x in wins])
-    #print 'LOSSES:'
-    #print '\n'.join([str(x) for x in losses])
+    wins, losses = solver.prune_paths(wins, losses)
+    print 'WINS:'
+    print '\n'.join([str(x) for x in wins])
+    print 'LOSSES:'
+    print '\n'.join([str(x) for x in losses])
 
     total_wins = len(wins)
     total_losses = len(losses)
@@ -50,9 +50,9 @@ level3 = [
 level4 = [
     "                    ",
     "                    ",
-    "      _S_ _         ",
-    "       _S_S         ",
-    "_______S*___________",
+    "      _____         ",
+    "     ___S_S         ",
+    "_______S*S__________",
 ]
 
 do(level1)
